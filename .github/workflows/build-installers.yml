@@ -41,7 +41,7 @@ jobs:
         shell: bash
         run: |
           jpackage --type dmg --input . --main-jar app.jar --main-class Main \
-        --name InventorySystem --icon InventoryApp/I.S.icns --dest output
+            --name InventorySystem --icon InventoryApp/I.S.icns --dest output
 
       - name: Package app (Linux)
         if: matrix.os == 'ubuntu-latest'
