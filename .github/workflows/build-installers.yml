@@ -38,10 +38,6 @@ jobs:
             --name "InventorySystem" \
             --app-version 1.0 \
             --type ${{ steps.pkg.outputs.type }} \
-            --vendor "Kenjie Software" \
-            --copyright "© 2025 Kenjie" \
-            --description "Inventory management system" \
-            --java-options "--enable-preview" \
 
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
