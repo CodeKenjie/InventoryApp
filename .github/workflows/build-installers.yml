@@ -28,13 +28,29 @@ jobs:
           javac -d bin -cp "lib/*" src/*.java
           jar cfm InventoryApp/Inventory.jar MANIFEST.MF -C bin .
 
+      - name: Set package type and icon
+        id: pkg
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            echo "type=exe" >> $GITHUB_OUTPUT
+            echo "icon=InventoryApp/I.S.ico" >> $GITHUB_OUTPUT
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            echo "type=dmg" >> $GITHUB_OUTPUT
+            echo "icon=InventoryApp/I.S.icns" >> $GITHUB_OUTPUT
+          else
+            echo "type=deb" >> $GITHUB_OUTPUT
+            echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
+          fi
+
       - name: Package app using jpackage
         run: |
           jpackage \
-           --input InventoryApp --main-jar Inventory.jar \ 
-           --name "InventorySystem" --app-version 1.0 \ 
-           --type ${{ matrix.os == 'windows-latest' && 'exe' || (matrix.os == 'macos-latest' && 'dmg' || 'deb') }} \ 
-           --icon InventoryApp/I.S.${{ matrix.os == 'windows-latest' && 'ico' || (matrix.os == 'macos-latest' && 'icns' || 'png') }}
+            --input InventoryApp \
+            --main-jar Inventory.jar \
+            --name "InventorySystem" \
+            --app-version 1.0 \
+            --type ${{ steps.pkg.outputs.type }} \
+            --icon ${{ steps.pkg.outputs.icon }}
 
       - name: Upload installer Artifact
         uses: actions/upload-artifact@v4
