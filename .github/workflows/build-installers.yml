@@ -30,7 +30,7 @@ jobs:
 
       - name: Package app using jpackage
         run: |
-          jpackage --input inventoryApp \ --main-jar Inventory.jar \ --name "InventorySystem" --app-version 1.0 \ --type ${{ matrix.os == 'windows-latest' && 'exe' || (matrix.os == 'macos-latest' && 'dmg' || 'deb') }} \ --icon InventoryApp/I.S.*{{ matrix.os == 'windows-latest' && 'ico' || (matrix.os == 'macos-latest' && 'icns' || 'png') }}
+          jpackage --input inventoryApp \ --main-jar Inventory.jar \ --name "InventorySystem" --app-version 1.0 \ --type ${{ matrix.os == 'windows-latest' && 'exe' || (matrix.os == 'macos-latest' && 'dmg' || 'deb') }} \ --icon InventoryApp/I.S.${{ matrix.os == 'windows-latest' && 'ico' || (matrix.os == 'macos-latest' && 'icns' || 'png') }}
 
       - name: Upload installer Artifact
         uses: actions/upload-artifact@v4
