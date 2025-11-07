@@ -24,7 +24,6 @@ jobs:
 
       - name: Build JAR
         run: |
-          mkdir -p bin
           javac -d bin -cp "lib/*" src/*.java
           echo "Main-Class: Main" > MANIFEST.MF
           jar cfm InventoryApp/Inventory.jar MANIFEST.MF -C bin .
