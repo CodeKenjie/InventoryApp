@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
@@ -19,34 +19,45 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: 21
 
       - name: Build JAR
         run: |
-          javac -d bin -cp "lib/*" src/*.java
+          mkdir -p build
+          javac -d build src/*.java
           echo "Main-Class: Main" > MANIFEST.MF
-          jar cfm InventoryApp/Inventory.jar MANIFEST.MF -C bin .
+          jar cfm app.jar MANIFEST.MF -C build .
 
-      - name: Package app
+      # Windows uses PowerShell syntax
+      - name: Package app (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
         run: |
-          if ([[ "${{ matrix.os }}" == "windows-latest" ]]); then
-            jpackage --input InventoryApp --main-jar Inventory.jar --main-class Main \
-              --name InventorySystem --type exe --app-version 1.0
-          elif ([[ "${{ matrix.os }}" == "macos-latest" ]]); then
-            jpackage --input InventoryApp --main-jar Inventory.jar --main-class Main \
-              --name InventorySystem --type dmg --app-version 1.0
-          else
-            jpackage --input InventoryApp --main-jar Inventory.jar --main-class Main \
-              --name InventorySystem --type deb --app-version 1.0
-          fi
+          jpackage --type exe --input . --main-jar app.jar --main-class Main `
+            --name InventorySystem --dest output
+
+      # macOS uses Bash
+      - name: Package app (macOS)
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          jpackage --type dmg --input . --main-jar app.jar --main-class Main \
+            --name InventorySystem --dest output
+
+      # Linux uses Bash and needs fakeroot/rpm
+      - name: Package app (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot rpm
+          jpackage --type deb --input . --main-jar app.jar --main-class Main \
+            --name InventorySystem --dest output
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-installer
-          path: |
-            *.exe
-            *.dmg
-            *.deb
+          path: output/
 
