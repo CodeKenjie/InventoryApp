@@ -1,4 +1,4 @@
-name: Build Java Installer
+name: Build Java Installers
 
 on:
   push:
@@ -12,22 +12,28 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+
     steps:
+      # 1. Checkout your code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up JDK 21 (Temurin)
       - name: Set up JDK 21
-        uses: Actions/setup-java@v4
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
+      # 3. Compile your Java source files and build the JAR
       - name: Build JAR file
         run: |
           mkdir -p bin
           javac -d bin -cp "lib/*" src/*.java
+          echo "Main-Class: Main" > MANIFEST.MF
           jar cfm InventoryApp/Inventory.jar MANIFEST.MF -C bin .
 
+      # 4. Set correct installer type and icon per OS
       - name: Set package type and icon
         id: pkg
         run: |
@@ -42,21 +48,29 @@ jobs:
             echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
           fi
 
+      # 5. Package into an installer with jpackage (includes JRE automatically)
       - name: Package app using jpackage
         run: |
           jpackage \
             --input InventoryApp \
             --main-jar Inventory.jar \
+            --main-class Main \
             --name "InventorySystem" \
             --app-version 1.0 \
             --type ${{ steps.pkg.outputs.type }} \
-            --icon ${{ steps.pkg.outputs.icon }}
+            --icon ${{ steps.pkg.outputs.icon }} \
+            --vendor "Kenjie Software" \
+            --copyright "© 2025 Kenjie" \
+            --description "Inventory management system" \
+            --java-options "--enable-preview"
 
-      - name: Upload installer Artifact
+      # 6. Upload the generated installer as an artifact
+      - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }} - installer
+          name: ${{ matrix.os }}-installer
           path: |
             *.exe
             *.dmg
             *.deb
+
