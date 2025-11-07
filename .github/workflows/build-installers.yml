@@ -34,14 +34,14 @@ jobs:
         shell: pwsh
         run: |
           jpackage --type exe --input . --main-jar app.jar --main-class Main `
-            --name InventorySystem --dest output
+            --name InventorySystem --icon InventoryApp/I.S.ico --dest output
 
       - name: Package app (macOS)
         if: matrix.os == 'macos-latest'
         shell: bash
         run: |
           jpackage --type dmg --input . --main-jar app.jar --main-class Main \
-            --name InventorySystem --dest output
+        --name InventorySystem --icon InventoryApp/I.S.icns --dest output
 
       - name: Package app (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -50,7 +50,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fakeroot rpm
           jpackage --type deb --input . --main-jar app.jar --main-class Main \
-            --name InventorySystem --dest output
+            --name InventorySystem --icon InventoryApp/I.S.png --dest output
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
