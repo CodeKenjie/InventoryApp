@@ -30,10 +30,10 @@ jobs:
 
       - name: Package app
         run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          if ([[ "${{ matrix.os }}" == "windows-latest" ]]); then
             jpackage --input InventoryApp --main-jar Inventory.jar --main-class Main \
               --name InventorySystem --type exe --app-version 1.0
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          elif ([[ "${{ matrix.os }}" == "macos-latest" ]]); then
             jpackage --input InventoryApp --main-jar Inventory.jar --main-class Main \
               --name InventorySystem --type dmg --app-version 1.0
           else
