@@ -28,7 +28,6 @@ jobs:
       # 3. Compile your Java source files and build the JAR
       - name: Build JAR file
         run: |
-          mkdir -p bin
           javac -d bin -cp "lib/*" src/*.java
           echo "Main-Class: Main" > MANIFEST.MF
           jar cfm InventoryApp/Inventory.jar MANIFEST.MF -C bin .
