@@ -33,10 +33,10 @@ jobs:
         run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             echo "type=exe" >> $GITHUB_OUTPUT
-            echo "icon=InventoryApp/I.S.ico" >> $GITHUB_OUTPUT
+            echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             echo "type=dmg" >> $GITHUB_OUTPUT
-            echo "icon=InventoryApp/I.S.icns" >> $GITHUB_OUTPUT
+            echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
           else
             echo "type=deb" >> $GITHUB_OUTPUT
             echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
