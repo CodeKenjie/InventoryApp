@@ -13,7 +13,7 @@
 
 # Step by Step Install
 
-**Step 1** go to this link - https://github.com/CodeKenjie/InventoryApp/releases/tag/v1.0
+**Step 1** go to this link - (https://github.com/CodeKenjie/InventoryApp/releases/tag/v1.01)
 
 **Step 2** install the (.zip or tar.zip) file it will install a zip file
 
