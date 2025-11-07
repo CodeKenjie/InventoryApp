@@ -29,7 +29,6 @@ jobs:
           echo "Main-Class: Main" > MANIFEST.MF
           jar cfm app.jar MANIFEST.MF -C build .
 
-      # Windows uses PowerShell syntax
       - name: Package app (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
@@ -37,7 +36,6 @@ jobs:
           jpackage --type exe --input . --main-jar app.jar --main-class Main `
             --name InventorySystem --dest output
 
-      # macOS uses Bash
       - name: Package app (macOS)
         if: matrix.os == 'macos-latest'
         shell: bash
@@ -45,7 +43,6 @@ jobs:
           jpackage --type dmg --input . --main-jar app.jar --main-class Main \
             --name InventorySystem --dest output
 
-      # Linux uses Bash and needs fakeroot/rpm
       - name: Package app (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
@@ -60,4 +57,13 @@ jobs:
         with:
           name: ${{ matrix.os }}-installer
           path: output/
-
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            output/*.exe
+            output/*.dmg
+            output/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
