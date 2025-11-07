@@ -36,10 +36,10 @@ jobs:
       - name: Set package type and icon
         id: pkg
         run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          if ([[ "${{ matrix.os }}" == "windows-latest" ]]); then
             echo "type=exe" >> $GITHUB_OUTPUT
             echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+          elif ([[ "${{ matrix.os }}" == "macos-latest" ]]); then
             echo "type=dmg" >> $GITHUB_OUTPUT
             echo "icon=InventoryApp/I.S.png" >> $GITHUB_OUTPUT
           else
