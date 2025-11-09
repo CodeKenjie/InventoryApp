@@ -13,19 +13,20 @@
 
 # Step by Step Install
 
-**Step 1** go to this link - ([https://github.com/CodeKenjie/InventoryApp/releases/tag/v1.01](https://github.com/CodeKenjie/InventoryApp/actions/runs/19176396367))
+**Step 1** go to this link - https://github.com/CodeKenjie/InventoryApp/releases/tag/v1.01
 
 **Step 2** install the (.zip or tar.zip) file it will install a zip file
 
-**Step 3** unzip the file or just pick the intaller you need for your OS 
-- for Windows(.exe) 
-- for MacOS(.dmg)
-- for Linux (.deb)
+**Step 3** Make sure to install the jdk - https://download.oracle.com/java/25/latest/jdk-25_windows-x64_bin.exe **and** sqlite-tools-win-arm64-3510000.zip **at** https://sqlite.org/download.html
 
-this will install the file and i believe it should make a shortcut in your Start Menu (Sorry this is my first time releasing an app, so im not sure about most of the things)
+**Step 4** unzip the file in your Program Files at your local disk
 
-**Step 4** Use the Your inventory system :)
+**Step 5** inside InventoryApp file you can see the Inventory.jar (now you can make a shortcut and put it in your desktop so you can access the app easily);
 
-thats all thank you very much
+**Step 6** if you followed all the Steps and Install everything you need to install it should work fine, **i just tried it -_-**
+
+I will try making it a stand alone app where you wont need to install java or sqlite and probably put an icon and make it like and actual app, I'll just keep you updated :)
+
+Thats all thank you very much
 
 cttm: CodeKenjie
