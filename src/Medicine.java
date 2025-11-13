@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.sql.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Medicine extends JFrame implements ActionListener{
     // variables set
@@ -21,6 +23,7 @@ public class Medicine extends JFrame implements ActionListener{
     JButton search;
     JButton log;
     JButton logout;
+    JButton save;
     JTextField item_tf;
     JTextField note_tf;
     JTextField search_tf;
@@ -150,6 +153,10 @@ public class Medicine extends JFrame implements ActionListener{
         logout = new JButton("logout");
         logout.addActionListener(this);
         logout.setFocusable(false);
+        save = new JButton("save");
+        save.setFocusable(false);
+        save.addActionListener(this);
+        logs.add(save);
         logs.add(logout);
         logs.add(log);
 
@@ -259,7 +266,48 @@ public class Medicine extends JFrame implements ActionListener{
             err.printStackTrace();
         }
     }
-    
+        
+    public void saveTableToCSV(JTable table, String fileloc) {
+        try {
+            FileWriter csv = new FileWriter(fileloc);
+            TableModel model = table.getModel();
+
+            csv.write("Medicine Inventory Report \n\n");
+
+            for (int i = 0; i < model.getColumnCount(); i++) {
+                csv.write(escapeCSV(model.getColumnName(i)));
+                if (i < model.getColumnCount() - 1) {
+                    csv.write(",");
+                }
+            }
+            csv.write("\n");
+            
+            for (int rows = 0; rows < model.getRowCount(); rows++) {
+                for(int cols = 0; cols < model.getColumnCount(); cols++) {
+                    Object cell = model.getValueAt(rows, cols);
+                    csv.write(escapeCSV(cell == null ? "" : cell.toString()));
+                    if (cols < model.getColumnCount()) {
+                        csv.write(",");
+                    }
+                }
+                csv.write("\n");
+            }
+
+            csv.flush();
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static String escapeCSV(String value) {
+        if(value.contains(",") || value.contains("\"") || value.contains("\n")){
+            value = value.replace("\"", "\"\"");
+            return "\"" + value + "\"";
+        } else {
+            return value;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == add) {
@@ -599,6 +647,19 @@ public class Medicine extends JFrame implements ActionListener{
             expmonth.setValue(cm);
             expday.setValue(cd);
             expyear.setValue(cy);
+        }
+
+        if (e.getSource() == save) {
+            JFileChooser choosePath = new JFileChooser();
+
+            if (choosePath.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                String filePath = choosePath.getSelectedFile().getAbsolutePath();
+                if(!filePath.endsWith(".csv")){
+                    filePath += ".csv";
+                }
+                saveTableToCSV(ItemTable, filePath);
+            }
+            
         }
 
         if(e.getSource() == log) {

@@ -1,70 +1,26 @@
-name: Build Java Installers
+name: Build InventoryApp
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-
-      - name: Build JAR
-        run: |
-          mkdir -p build
-          javac -d build src/*.java
-          echo "Main-Class: Main" > MANIFEST.MF
-          jar cfm app.jar MANIFEST.MF -C build .
-
-      - name: Package app (Windows)
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: |
-          jpackage --type exe --input . --main-jar app.jar --main-class Main `
-            --name InventorySystem --icon InventoryApp/I.S.ico --dest output
-
-      - name: Package app (macOS)
-        if: matrix.os == 'macos-latest'
-        shell: bash
-        run: |
-          jpackage --type dmg --input . --main-jar app.jar --main-class Main \
-            --name InventorySystem --icon InventoryApp/I.S.icns --dest output
-
-      - name: Package app (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fakeroot rpm
-          jpackage --type deb --input . --main-jar app.jar --main-class Main \
-            --name InventorySystem --icon InventoryApp/I.S.png --dest output
-
-      - name: Upload installer
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B clean package
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-installer
-          path: output/
+          name: InventoryApp
+          path: target/*-jar-with-dependencies.jar
 
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            output/*.exe
-            output/*.dmg
-            output/*.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
