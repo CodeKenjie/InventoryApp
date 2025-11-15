@@ -1,26 +1,130 @@
-name: Build InventoryApp
+name: Build Installers (Windows, macOS, Linux)
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - "v*"
 
 jobs:
-  build:
+  build-linux:
+    name: Build Linux Installer (.deb)
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y fakeroot rpm
+
+      - name: Set Up JDK 17
+        uses: actions/setup-java@v3
         with:
-          distribution: temurin
-          java-version: 21
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B clean package
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build JAR with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Create Runtime (jlink)
+        run: |
+          jlink \
+            --add-modules java.desktop,java.sql,java.logging \
+            --output runtime
+
+      - name: Build Linux Installer (.deb)
+        run: |
+          jpackage \
+            --name InventoryApp \
+            --input target \
+            --main-jar InventoryApp-1.0-jar-with-dependencies.jar \
+            --main-class src.Main \
+            --type deb \
+            --runtime-image runtime \
+            --app-version ${{ github.ref_name }}
+
+      - name: Upload Linux Installer
+        uses: actions/upload-artifact@v3
         with:
-          name: InventoryApp
-          path: target/*-jar-with-dependencies.jar
+          name: InventoryApp-linux
+          path: InventoryApp*.deb
+
+
+  build-windows:
+    name: Build Windows Installer (.exe)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build JAR with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Create Runtime (jlink)
+        run: |
+          jlink ^
+            --add-modules java.desktop,java.sql,java.logging ^
+            --output runtime
+
+      - name: Build Windows Installer (.exe)
+        run: |
+          jpackage ^
+            --name InventoryApp ^
+            --input target ^
+            --main-jar InventoryApp-1.0-jar-with-dependencies.jar ^
+            --main-class src.Main ^
+            --type exe ^
+            --runtime-image runtime ^
+            --app-version ${{ github.ref_name }}
+
+      - name: Upload Windows Installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: InventoryApp-windows
+          path: InventoryApp*.exe
+
+
+  build-macos:
+    name: Build macOS Installer (.dmg)
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build JAR with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Create Runtime (jlink)
+        run: |
+          jlink \
+            --add-modules java.desktop,java.sql,java.logging \
+            --output runtime
+
+      - name: Build macOS Installer (.dmg)
+        run: |
+          jpackage \
+            --name InventoryApp \
+            --input target \
+            --main-jar InventoryApp-1.0-jar-with-dependencies.jar \
+            --main-class src.Main \
+            --type dmg \
+            --runtime-image runtime \
+            --app-version ${{ github.ref_name }}
+
+      - name: Upload macOS Installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: InventoryApp-macos
+          path: InventoryApp*.dmg
 

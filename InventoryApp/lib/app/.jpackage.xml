@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<jpackage-state version="25.0.1" platform="linux">
+  <app-version>1.0</app-version>
+  <main-launcher>InventoryApp</main-launcher>
+  <main-class>src.Main</main-class></jpackage-state>
