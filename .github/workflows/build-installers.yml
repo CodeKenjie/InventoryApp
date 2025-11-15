@@ -69,6 +69,7 @@ jobs:
       - name: Create Runtime (jlink)
         shell: cmd
         run: |
+          if exist runtime rmdir /s /q runtime
           jlink ^
             --add-modules java.desktop,java.sql,java.logging ^
             --output runtime
@@ -76,7 +77,6 @@ jobs:
       - name: Build Windows Installer (.exe)
         shell: cmd
         run: |
-          if exist runtime rmdir /s /q runtime
           jpackage ^
             --name InventoryApp ^
             --input target ^
@@ -111,13 +111,13 @@ jobs:
 
       - name: Create Runtime (jlink)
         run: |
+          rm -rf runtime
           jlink \
             --add-modules java.desktop,java.sql,java.logging \
             --output runtime
 
       - name: Build macOS Installer (.dmg)
         run: |
-          rm -rf runtime
           jpackage \
             --name InventoryApp \
             --input target \
