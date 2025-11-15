@@ -17,7 +17,7 @@
 
 **Step 2** install a zip file it will install a zip file
 
-**Step 3** Make sure to install the jdk - https://download.oracle.com/java/25/latest/jdk-25_windows-x64_bin.exe **and** sqlite-tools-win-arm64-3510000.zip **at** https://sqlite.org/download.html
+**Step 3** Make sure to install the jdk - https://download.oracle.com/java/25/latest/jdk-25_windows-x64_bin.exe
 
 **Step 4** unzip the file in your Program Files at your local disk
 
