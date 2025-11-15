@@ -41,7 +41,7 @@ jobs:
             --main-class src.Main \
             --type deb \
             --runtime-image runtime \
-            --app-version ${{ github.ref_name }}
+            --app-version ${ github.ref_namei#v }
 
       - name: Upload Linux Installer
         uses: actions/upload-artifact@v4
@@ -75,8 +75,9 @@ jobs:
             --output runtime
 
       - name: Build Windows Installer (.exe)
-        shell: cmd
+        shell: pwsh
         run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
           jpackage ^
             --name InventoryApp ^
             --input target ^
@@ -84,7 +85,7 @@ jobs:
             --main-class src.Main ^
             --type exe ^
             --runtime-image runtime ^
-            --app-version ${{ github.ref_name }}
+            --app-version $version
 
       - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
@@ -125,7 +126,7 @@ jobs:
             --main-class src.Main \
             --type dmg \
             --runtime-image runtime \
-            --app-version ${{ github.ref_name }}
+        --app-version ${{ github.ref_name#v }}
 
       - name: Upload macOS Installer
         uses: actions/upload-artifact@v4
