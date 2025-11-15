@@ -13,9 +13,9 @@
 
 # Step by Step Install
 
-**Step 1** go to this link - https://github.com/CodeKenjie/InventoryApp/releases/tag/v1.01
+**Step 1** go to this link - (https://github.com/CodeKenjie/InventoryApp/archive/refs/heads/main.zip)
 
-**Step 2** install the (.zip or tar.zip) file it will install a zip file
+**Step 2** install a zip file it will install a zip file
 
 **Step 3** Make sure to install the jdk - https://download.oracle.com/java/25/latest/jdk-25_windows-x64_bin.exe **and** sqlite-tools-win-arm64-3510000.zip **at** https://sqlite.org/download.html
 
